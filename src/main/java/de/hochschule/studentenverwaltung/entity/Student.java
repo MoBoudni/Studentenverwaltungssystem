@@ -7,8 +7,8 @@ package de.hochschule.studentenverwaltung.entity;
  * Dies ist ein einfaches POJO (Plain Old Java Object), das
  * Studentendaten mit ordnungsgemäßer Kapselung durch Getter und Setter kapselt.
  * 
- * @author Studentenverwaltungssystem Team
- * @version 1.0
+ * @author Team
+ * @version 2.0
  */
 public class Student {
     private Long id;

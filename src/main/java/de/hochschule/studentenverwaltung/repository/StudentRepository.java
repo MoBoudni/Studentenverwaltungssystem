@@ -8,8 +8,8 @@ package de.hochschule.studentenverwaltung.repository;
  * Sie verwendet eine In-Memory H2-Datenbank für die Datenpersistierung
  * und stellt CRUD-Operationen (Create, Read, Update, Delete) bereit.
  * 
- * @author Studentenverwaltungssystem Team
- * @version 1.0
+ * @author Team
+ * @version 2.0
  */
 
 import java.sql.*;
@@ -20,7 +20,7 @@ import de.hochschule.studentenverwaltung.entity.Student;
 
 public class StudentRepository {
     /** JDBC-URL für die H2 In-Memory-Datenbank */
-    private final String jdbcUrl = "jdbc:h2:mem:testdb";
+    private final String jdbcUrl = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"; // ; DB_CLOSE_ON_EXIT=FALSE";
     /** Datenbankbenutzername */
     private final String username = "sa";
     /** Datenbankpasswort */
@@ -31,7 +31,9 @@ public class StudentRepository {
      * Initialisiert das Repository und erstellt die Datenbanktabelle falls nötig.
      */
     public StudentRepository() {
+    	System.out.println("Initialisiere StudentRepository und erstelle Tabelle...");
         createTableIfNotExists();
+        debugCheckTableExists(); // ← Prüfung hinzufügen
     }
 
     /**
@@ -51,10 +53,13 @@ public class StudentRepository {
         try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
+            System.out.println("✅ Tabelle 'students' wurde erfolgreich erstellt oder existiert bereits.");
         } catch (SQLException e) {
+            System.err.println("❌ FEHLER beim Erstellen der Tabelle 'students': " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 
     /**
      * Ruft alle Studenten aus der Datenbank ab.
@@ -62,6 +67,7 @@ public class StudentRepository {
      * @return eine Liste aller Student-Objekte in der Datenbank
      */
     public List<Student> findAll() {
+    	System.out.println("📊 Lese Studenten aus DB...");
         List<Student> students = new ArrayList<>();
         String sql = "SELECT * FROM students";
 
@@ -78,7 +84,9 @@ public class StudentRepository {
                 );
                 students.add(student);
             }
+            System.out.println("🔍 " + students.size() + " Student(en) aus der DB geladen.");
         } catch (SQLException e) {
+        	 System.err.println("❌ Fehler beim Lesen aller Studenten: " + e.getMessage());
             e.printStackTrace();
         }
         return students;
@@ -120,6 +128,7 @@ public class StudentRepository {
                     }
                 }
             }
+            System.out.println("📥 Student gespeichert: " + student.getFirstName() + " " + student.getLastName());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -166,6 +175,21 @@ public class StudentRepository {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    
+    private void debugCheckTableExists() {
+        String sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'students'";
+        try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                System.out.println("🔍 Tabelle 'students' existiert.");
+            } else {
+                System.out.println("❌ Tabelle 'students' existiert NICHT!");
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Fehler bei Tabellenprüfung: " + e.getMessage());
         }
     }
 }

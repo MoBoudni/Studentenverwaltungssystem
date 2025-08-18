@@ -8,8 +8,8 @@ package de.hochschule.studentenverwaltung.dto;
  * Kopplung zwischen den Schichten zu reduzieren und bieten eine saubere
  * Abstraktion für Datenübertragungen.
  * 
- * @author Studentenverwaltungssystem Team
- * @version 1.0
+ * @author Team
+ * @version 2.0
  */
 public class StudentDto {
     private Long id;

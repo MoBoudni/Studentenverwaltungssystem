@@ -8,8 +8,8 @@ package de.hochschule.studentenverwaltung.service;
  * Sie enthält die Geschäftslogik der Anwendung und koordiniert
  * die Operationen zwischen DTOs und Entities.
  * 
- * @author Studentenverwaltungssystem Team
- * @version 1.0
+ * @author Team
+ * @version 2.0
  */
 import de.hochschule.studentenverwaltung.entity.Student;
 import de.hochschule.studentenverwaltung.dto.StudentDto;

@@ -9,8 +9,8 @@ package de.hochschule.studentenverwaltung.mapper;
  * klare Trennung zwischen den verschiedenen Darstellungen der Daten
  * aufrechtzuerhalten.
  * 
- * @author Studentenverwaltungssystem Team
- * @version 1.0
+ * @author Team
+ * @version 2.0
  */
 
 

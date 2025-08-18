@@ -9,11 +9,12 @@ package de.hochschule.studentenverwaltung.ui;
  * Die Anwendung folgt einem geschichteten Architekturmuster mit klarer
  * Trennung der Verantwortlichkeiten.
  * 
- * @author Studentenverwaltungssystem Team
- * @version 1.0
+ * @author Team
+ * @version 2.0
  */
 
 import de.hochschule.studentenverwaltung.dto.StudentDto;
+import de.hochschule.studentenverwaltung.repository.StudentRepository;
 import de.hochschule.studentenverwaltung.service.StudentService;
 
 import java.util.List;
@@ -29,7 +30,8 @@ public class StudentManagementSystem {
      */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        StudentService studentService = new StudentService(new de.hochschule.studentenverwaltung.repository.StudentRepository());
+//        StudentService studentService = new StudentService(new de.hochschule.studentenverwaltung.repository.StudentRepository());
+        StudentService studentService = new StudentService(new StudentRepository());
 
         while (true) {
             displayMainMenu();
