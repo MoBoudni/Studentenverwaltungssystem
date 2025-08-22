@@ -167,16 +167,29 @@ public class StudentRepository {
      * 
      * @param id die ID des zu löschenden Studenten
      */
-    public void deleteById(Long id) {
+    public boolean deleteById(Long id) {
         String sql = "DELETE FROM students WHERE id = ?";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setLong(1, id);
-            pstmt.executeUpdate();
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0; // true, wenn mindestens eine Zeile gelöscht wurde
         } catch (SQLException e) {
+            System.err.println("❌ Fehler beim Löschen des Students mit ID " + id + ": " + e.getMessage());
             e.printStackTrace();
+            return false;
         }
     }
+//    public void deleteById(Long id) {
+//        String sql = "DELETE FROM students WHERE id = ?";
+//        try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
+//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+//            pstmt.setLong(1, id);
+//            pstmt.executeUpdate();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
     
     private void debugCheckTableExists() {
         String sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'students'";

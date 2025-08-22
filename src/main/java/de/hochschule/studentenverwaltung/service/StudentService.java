@@ -84,7 +84,7 @@ public class StudentService {
      * 
      * @param studentId die ID des zu löschenden Studenten
      */
-    public void deleteStudent(Long studentId) {
-        studentRepository.deleteById(studentId);
+    public boolean deleteStudent(Long studentId) {
+        return studentRepository.deleteById(studentId);
     }
 }
