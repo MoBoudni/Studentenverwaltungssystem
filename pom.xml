@@ -13,7 +13,7 @@
     <!-- Projektinfo -->
     <name>Studentenverwaltungssystem</name>
     <description>
-        Ein Konsolenbasiertes Studentenverwaltungssystem mit Clean Code Architektur, 
+        Ein konsolenbasiertes Studentenverwaltungssystem mit Clean Code Architektur,
         H2-Datenbank, Repository Pattern, Service Layer und DTOs.
     </description>
     <url>https://github.com/dein-benutzer/Studentenverwaltungssystem</url>
@@ -28,7 +28,7 @@
 
     <!-- Abhängigkeiten -->
     <dependencies>
-        <!-- H2 Database (für in-memory DB) -->
+        <!-- H2 Database -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -36,12 +36,26 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- JUnit 5 (moderner Testframework) -->
+        <!-- JUnit 5 -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.0</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- SLF4J API -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.12</version>
+        </dependency>
+
+        <!-- Logback (Implementierung für SLF4J) -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
         </dependency>
     </dependencies>
 
@@ -54,7 +68,7 @@
             </resource>
         </resources>
         <plugins>
-            <!-- Compiler-Plugin -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -64,7 +78,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Surefire Plugin (für JUnit 5) -->
+            <!-- Maven Surefire Plugin (für JUnit 5) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -72,4 +86,4 @@
             </plugin>
         </plugins>
     </build>
-</project>
+</project> 

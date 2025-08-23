@@ -16,11 +16,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.hochschule.studentenverwaltung.entity.Student;
 
 public class StudentRepository {
+	 private static final Logger logger = LoggerFactory.getLogger(StudentRepository.class);
+	
     /** JDBC-URL für die H2 In-Memory-Datenbank */
-    private final String jdbcUrl = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"; // ; DB_CLOSE_ON_EXIT=FALSE";
+    private final String jdbcUrl = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"; // ; DB_CLOSE_ON_EXIT=FALSE";
     /** Datenbankbenutzername */
     private final String username = "sa";
     /** Datenbankpasswort */
@@ -31,7 +36,7 @@ public class StudentRepository {
      * Initialisiert das Repository und erstellt die Datenbanktabelle falls nötig.
      */
     public StudentRepository() {
-    	System.out.println("Initialisiere StudentRepository und erstelle Tabelle...");
+    	logger.info("Initialisiere StudentRepository und erstelle Tabelle...");
         createTableIfNotExists();
         debugCheckTableExists(); // ← Prüfung hinzufügen
     }
@@ -53,10 +58,10 @@ public class StudentRepository {
         try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("✅ Tabelle 'students' wurde erfolgreich erstellt oder existiert bereits.");
+            logger.info("✅ Tabelle 'students' wurde erfolgreich erstellt oder existiert bereits.");
         } catch (SQLException e) {
             System.err.println("❌ FEHLER beim Erstellen der Tabelle 'students': " + e.getMessage());
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 
@@ -180,29 +185,19 @@ public class StudentRepository {
             return false;
         }
     }
-//    public void deleteById(Long id) {
-//        String sql = "DELETE FROM students WHERE id = ?";
-//        try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
-//             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-//            pstmt.setLong(1, id);
-//            pstmt.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
     
     private void debugCheckTableExists() {
-        String sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'students'";
+        String sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = 'STUDENTS'";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
-                System.out.println("🔍 Tabelle 'students' existiert.");
+                logger.info("🔍 Tabelle 'STUDENTS' existiert in der DB.");
             } else {
-                System.out.println("❌ Tabelle 'students' existiert NICHT!");
+                logger.warn("❌ Tabelle 'STUDENTS' existiert NICHT!");
             }
         } catch (SQLException e) {
-            System.err.println("❌ Fehler bei Tabellenprüfung: " + e.getMessage());
+            logger.error("❌ Fehler bei Tabellenprüfung: {}", e.getMessage(), e);
         }
     }
 }

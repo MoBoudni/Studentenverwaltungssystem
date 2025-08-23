@@ -20,7 +20,12 @@ import de.hochschule.studentenverwaltung.service.StudentService;
 import java.util.List;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StudentManagementSystem {
+    
+    private static final Logger logger = LoggerFactory.getLogger(StudentManagementSystem.class);
     
     /**
      * Haupt-Einstiegspunkt der Anwendung.
@@ -29,15 +34,28 @@ public class StudentManagementSystem {
      * @param args Kommandozeilenargumente (werden nicht verwendet)
      */
     public static void main(String[] args) {
+        logger.info("🚀 Studentenverwaltungssystem wird gestartet...");
+        
         Scanner scanner = new Scanner(System.in);
-//        StudentService studentService = new StudentService(new de.hochschule.studentenverwaltung.repository.StudentRepository());
         StudentService studentService = new StudentService(new StudentRepository());
+
+        logger.info("StudentService und Repository wurden initialisiert.");
 
         while (true) {
             displayMainMenu();
             
-            int choice = scanner.nextInt();
+            int choice;
+            try {
+                choice = scanner.nextInt();
+            } catch (Exception e) {
+                logger.warn("Ungültige Eingabe: keine Zahl eingegeben.");
+                System.out.println("Bitte eine Zahl eingeben.");
+                scanner.nextLine(); // Puffer leeren
+                continue;
+            }
             scanner.nextLine(); // Zeilenumbruchzeichen konsumieren
+
+            logger.info("Benutzer wählt Option: {}", choice);
 
             switch (choice) {
                 case 1:
@@ -56,9 +74,11 @@ public class StudentManagementSystem {
                     viewStudent(scanner, studentService);
                     break;
                 case 6:
+                    logger.info("Benutzer beendet das Programm.");
                     System.out.println("Auf Wiedersehen!");
                     return;
                 default:
+                    logger.warn("Ungültige Option eingegeben: {}", choice);
                     System.out.println("Ungültige Option. Versuchen Sie es erneut.");
             }
         }
@@ -85,12 +105,14 @@ public class StudentManagementSystem {
      * @param service der StudentService für den Datenzugriff
      */
     private static void listStudents(StudentService service) {
+        logger.info("Benutzer listet alle Studenten auf.");
         List<StudentDto> students = service.getAllStudents();
         System.out.println("\n--- Studenten ---");
         if (students.isEmpty()) {
             System.out.println("Keine Studenten gefunden.");
         } else {
             students.forEach(s -> System.out.println(s.getId() + ". " + s.getFirstName() + " " + s.getLastName() + " (" + s.getEmail() + ")"));
+            logger.info("{} Studenten angezeigt.", students.size());
         }
     }
 
@@ -111,6 +133,7 @@ public class StudentManagementSystem {
 
         StudentDto student = new StudentDto(null, firstName, lastName, email);
         service.createStudent(student);
+        logger.info("Neuer Student hinzugefügt: {} {}, E-Mail: {}", firstName, lastName, email);
         System.out.println("Student erfolgreich hinzugefügt.");
     }
 
@@ -124,11 +147,21 @@ public class StudentManagementSystem {
      */
     private static void editStudent(Scanner scanner, StudentService service) {
         System.out.print("Geben Sie die ID des zu bearbeitenden Studenten ein: ");
-        Long id = scanner.nextLong();
+        Long id;
+        try {
+            id = scanner.nextLong();
+        } catch (Exception e) {
+            logger.warn("Ungültige ID-Eingabe beim Bearbeiten.");
+            System.out.println("Bitte eine gültige Zahl eingeben.");
+            scanner.nextLine();
+            return;
+        }
         scanner.nextLine();
 
+        logger.info("Bearbeitung angefordert für Student mit ID: {}", id);
         StudentDto student = service.getStudentById(id);
         if (student == null) {
+            logger.warn("Bearbeitungsversuch für nicht existierenden Student mit ID: {}", id);
             System.out.println("Student nicht gefunden.");
             return;
         }
@@ -150,6 +183,7 @@ public class StudentManagementSystem {
         student.setEmail(email);
 
         service.updateStudent(student);
+        logger.info("Student mit ID {} aktualisiert: {} {}, E-Mail: {}", id, firstName, lastName, email);
         System.out.println("Student aktualisiert.");
     }
 
@@ -162,9 +196,26 @@ public class StudentManagementSystem {
      */
     private static void deleteStudent(Scanner scanner, StudentService service) {
         System.out.print("Geben Sie die ID des zu löschenden Studenten ein: ");
-        Long id = scanner.nextLong();
-        service.deleteStudent(id);
-        System.out.println("Student gelöscht.");
+        Long id;
+        try {
+            id = scanner.nextLong();
+        } catch (Exception e) {
+            logger.warn("Ungültige ID-Eingabe beim Löschen.");
+            System.out.println("Bitte eine gültige Zahl eingeben.");
+            scanner.nextLine();
+            return;
+        }
+        scanner.nextLine();
+
+        logger.info("Löschvorgang gestartet für Student mit ID: {}", id);
+        boolean deleted = service.deleteStudent(id);
+        if (deleted) {
+            logger.info("Student mit ID {} erfolgreich gelöscht.", id);
+            System.out.println("Student gelöscht.");
+        } else {
+            logger.warn("Versuch, nicht existierenden Student mit ID {} zu löschen.", id);
+            System.out.println("Student nicht gefunden.");
+        }
     }
 
     /**
@@ -176,15 +227,29 @@ public class StudentManagementSystem {
      */
     private static void viewStudent(Scanner scanner, StudentService service) {
         System.out.print("Geben Sie die ID des anzuzeigenden Studenten ein: ");
-        Long id = scanner.nextLong();
+        Long id;
+        try {
+            id = scanner.nextLong();
+        } catch (Exception e) {
+            logger.warn("Ungültige ID-Eingabe beim Anzeigen.");
+            System.out.println("Bitte eine gültige Zahl eingeben.");
+            scanner.nextLine();
+            return;
+        }
+        scanner.nextLine();
+
+        logger.info("Details angefordert für Student mit ID: {}", id);
         StudentDto student = service.getStudentById(id);
         if (student == null) {
+            logger.warn("Anzeigeanfrage für nicht existierenden Student mit ID: {}", id);
             System.out.println("Student nicht gefunden.");
         } else {
             System.out.println("\n--- Studentendetails ---");
             System.out.println("ID: " + student.getId());
             System.out.println("Name: " + student.getFirstName() + " " + student.getLastName());
             System.out.println("E-Mail: " + student.getEmail());
+            logger.info("Details für Student ID {} angezeigt.", id);
         }
     }
 }
+
