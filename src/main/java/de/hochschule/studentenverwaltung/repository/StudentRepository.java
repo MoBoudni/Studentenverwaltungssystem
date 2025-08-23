@@ -25,7 +25,7 @@ public class StudentRepository {
 	 private static final Logger logger = LoggerFactory.getLogger(StudentRepository.class);
 	
     /** JDBC-URL für die H2 In-Memory-Datenbank */
-    private final String jdbcUrl = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"; // ; DB_CLOSE_ON_EXIT=FALSE";
+    private final String jdbcUrl = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1"; // ; DB_CLOSE_ON_EXIT=FALSE";
     /** Datenbankbenutzername */
     private final String username = "sa";
     /** Datenbankpasswort */
@@ -183,9 +183,9 @@ public class StudentRepository {
             System.err.println("❌ Fehler beim Löschen des Students mit ID " + id + ": " + e.getMessage());
             e.printStackTrace();
             return false;
+            }
         }
-    }
-    
+        
     private void debugCheckTableExists() {
         String sql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = 'STUDENTS'";
         try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
