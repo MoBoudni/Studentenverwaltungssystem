@@ -3,8 +3,16 @@ package de.hochschule.studentenverwaltung.service;
 import de.hochschule.studentenverwaltung.dto.StudentDto;
 import de.hochschule.studentenverwaltung.repository.StudentRepository;
 import org.junit.jupiter.api.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Testklasse für StudentService.
@@ -12,6 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class StudentServiceTest {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     private StudentService studentService;
     private StudentRepository repository;
@@ -22,6 +32,19 @@ public class StudentServiceTest {
         repository = new StudentRepository();
         // Service erhält das frische Repository
         studentService = new StudentService(repository);
+    }
+    
+    @AfterEach
+    void tearDown() {
+        // Leere die Tabelle nach jedem Test
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1", "sa", "");
+             Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM students");
+            stmt.execute("ALTER TABLE students ALTER COLUMN id RESTART WITH 1");
+            logger.info("🧹 Tabelle 'students' nach Test geleert und ID-Zähler zurückgesetzt.");
+        } catch (SQLException e) {
+            logger.error("❌ Fehler beim Leeren der Tabelle: {}", e.getMessage(), e);
+        }
     }
 
     @Test

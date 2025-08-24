@@ -19,7 +19,13 @@ import de.hochschule.studentenverwaltung.repository.StudentRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StudentService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
+	
     /** Das Repository für den Datenzugriff */
     private final StudentRepository studentRepository;
 
@@ -53,6 +59,9 @@ public class StudentService {
     public void createStudent(StudentDto studentDto) {
         Student student = StudentMapper.mapToStudent(studentDto);
         studentRepository.save(student);
+        // Setze die ID im DTO zurück
+        studentDto.setId(student.getId()); //  Wichtig!
+        logger.info("✅ Neuer Student erstellt mit ID: {}", student.getId());
     }
 
     /**
