@@ -1,0 +1,24 @@
+services:
+  h2-db:
+    image: oscarfonts/h2
+    container_name: h2-database
+    ports:
+      - "81:8082"   # H2-Webkonsole auf http://localhost:81
+      - "1521:1521" # TCP-Port für JDBC
+    environment:
+      - H2_OPTIONS=-webAllowOthers -ifNotExists
+    volumes:
+      - h2-data:/opt/h2-data  # korrektes Volume-Mapping
+
+  app:
+    build: .
+    container_name: student-app
+    depends_on:
+      - h2-db
+    environment:
+      - JDBC_URL=jdbc:h2:tcp://h2-db:1521/mem:testdb;DB_CLOSE_DELAY=-1
+    stdin_open: true
+    tty: true
+
+volumes:
+  h2-data:
