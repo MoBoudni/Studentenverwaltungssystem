@@ -35,7 +35,7 @@ public class StudentRepository {
      * Initialisiert das Repository und erstellt die Datenbanktabelle falls nötig.
      */
     public StudentRepository() {
-        logger.info("🔧 Initialisiere StudentRepository und erstelle Tabelle...");
+        logger.info("Initialisiere StudentRepository und erstelle Tabelle...");
         createTableIfNotExists();
     }
 
@@ -53,9 +53,9 @@ public class StudentRepository {
         try (Connection conn = DriverManager.getConnection(jdbcUrl, username, password);
              Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            logger.info("✅ Tabelle 'students' wurde erfolgreich erstellt oder existiert bereits.");
+            logger.info("Tabelle 'students' wurde erfolgreich erstellt oder existiert bereits.");
         } catch (SQLException e) {
-            logger.error("❌ FEHLER beim Erstellen der Tabelle: {}", e.getMessage(), e);
+            logger.error("FEHLER beim Erstellen der Tabelle: {}", e.getMessage(), e);
         }
     }
 
@@ -79,9 +79,9 @@ public class StudentRepository {
                 );
                 students.add(student);
             }
-            logger.info("📊 {} Student(en) aus der DB geladen.", students.size());
+            logger.info("{} Student(en) aus der DB geladen.", students.size());
         } catch (SQLException e) {
-            logger.error("❌ Fehler beim Lesen aller Studenten: {}", e.getMessage(), e);
+            logger.error("Fehler beim Lesen aller Studenten: {}", e.getMessage(), e);
         }
         return students;
     }
@@ -109,21 +109,21 @@ public class StudentRepository {
             if (isUpdate) {
                 pstmt.setLong(4, student.getId());
                 pstmt.executeUpdate();
-                logger.info("✅ Student aktualisiert: {} {}", student.getFirstName(), student.getLastName());
+                logger.info("Student aktualisiert: {} {}", student.getFirstName(), student.getLastName());
             } else {
                 pstmt.executeUpdate();
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         long generatedId = generatedKeys.getLong(1);
                         student.setId(generatedId);
-                        logger.info("✅ Neuer Student gespeichert mit ID: {}", generatedId);
+                        logger.info("Neuer Student gespeichert mit ID: {}", generatedId);
                     } else {
-                        logger.warn("⚠️ Keine generierte ID erhalten!");
+                        logger.warn("Keine generierte ID erhalten!");
                     }
                 }
             }
         } catch (SQLException e) {
-            logger.error("❌ Fehler beim Speichern des Students: {}", e.getMessage(), e);
+            logger.error("Fehler beim Speichern des Students: {}", e.getMessage(), e);
         }
     }
 
@@ -147,7 +147,7 @@ public class StudentRepository {
                 }
             }
         } catch (SQLException e) {
-            logger.error("❌ Fehler beim Suchen des Students mit ID {}: {}", id, e.getMessage(), e);
+            logger.error("Fehler beim Suchen des Students mit ID {}: {}", id, e.getMessage(), e);
         }
         return null;
     }
@@ -165,11 +165,11 @@ public class StudentRepository {
             if (deleted) {
                 logger.info("🗑️ Student mit ID {} erfolgreich gelöscht.", id);
             } else {
-                logger.warn("⚠️ Kein Student mit ID {} gefunden zum Löschen.", id);
+                logger.warn("Kein Student mit ID {} gefunden zum Löschen.", id);
             }
             return deleted;
         } catch (SQLException e) {
-            logger.error("❌ Fehler beim Löschen des Students mit ID {}: {}", id, e.getMessage(), e);
+            logger.error("Fehler beim Löschen des Students mit ID {}: {}", id, e.getMessage(), e);
             return false;
         }
     }
