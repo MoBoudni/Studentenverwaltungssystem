@@ -61,7 +61,7 @@ public class StudentService {
         studentRepository.save(student);
         // Setze die ID im DTO zurück
         studentDto.setId(student.getId()); //  Wichtig!
-        logger.info("✅ Neuer Student erstellt mit ID: {}", student.getId());
+        logger.info("Neuer Student erstellt mit ID: {}", student.getId());
     }
 
     /**
