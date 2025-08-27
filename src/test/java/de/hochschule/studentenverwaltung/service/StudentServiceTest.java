@@ -41,9 +41,9 @@ public class StudentServiceTest {
              Statement stmt = conn.createStatement()) {
             stmt.execute("DELETE FROM students");
             stmt.execute("ALTER TABLE students ALTER COLUMN id RESTART WITH 1");
-            logger.info("🧹 Tabelle 'students' nach Test geleert und ID-Zähler zurückgesetzt.");
+            logger.info("Tabelle 'students' nach Test geleert und ID-Zähler zurückgesetzt.");
         } catch (SQLException e) {
-            logger.error("❌ Fehler beim Leeren der Tabelle: {}", e.getMessage(), e);
+            logger.error("Fehler beim Leeren der Tabelle: {}", e.getMessage(), e);
         }
     }
 
