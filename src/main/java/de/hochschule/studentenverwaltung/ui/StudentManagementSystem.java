@@ -34,7 +34,7 @@ public class StudentManagementSystem {
      * @param args Kommandozeilenargumente (werden nicht verwendet)
      */
     public static void main(String[] args) {
-        logger.info("🚀 Studentenverwaltungssystem wird gestartet...");
+        logger.info("Studentenverwaltungssystem wird gestartet...");
         
         Scanner scanner = new Scanner(System.in);
         StudentService studentService = new StudentService(new StudentRepository());
